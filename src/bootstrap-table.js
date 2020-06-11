@@ -1410,7 +1410,7 @@ class BootstrapTable {
     })
 
     if (Utils.hasDetailViewIcon(this.options)) {
-      this.options.detailViewHAlign === 'left' ? html.splice(9, 0,'<td>') : html.push('<td>')
+      this.options.detailViewHAlign === 'left' ? html.splice(9, 0, '<td>') : html.push('<td>')
 
       if (Utils.calculateObjectValue(null, this.options.detailFilter, [i, item])) {
         const detailViewTemplate = `
@@ -1421,7 +1421,7 @@ class BootstrapTable {
         this.options.detailViewHAlign === 'left' ? html.splice(10, 0, detailViewTemplate) : html.push(detailViewTemplate)
       }
 
-      this.options.detailViewHAlign === 'left' ? html.splice(11, 0,'</td>') : html.push('</td>')
+      this.options.detailViewHAlign === 'left' ? html.splice(11, 0, '</td>') : html.push('</td>')
     }
 
     if (this.options.cardView) {
@@ -1879,7 +1879,11 @@ class BootstrapTable {
         }
       }
 
-      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[i - 1]))
+      let fieldIndex = i
+      if (this.options.detailViewHAlign === 'left') {
+        fieldIndex -= 1
+      }
+      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[fieldIndex]))
       if ($th.length > 1) {
         $th = $($ths[$this[0].cellIndex])
       }
