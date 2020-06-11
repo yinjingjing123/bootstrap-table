@@ -375,7 +375,7 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 
 - **Detail:**
 
-  Indicate how to align the detail view icon input. `'left'`, `'right'` can be used.
+  Indicate how to align the detail view icon. `'left'`, `'right'` can be used.
 
 - **Default:** `'left'`
 
