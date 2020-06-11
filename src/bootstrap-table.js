@@ -1879,7 +1879,7 @@ class BootstrapTable {
         }
       }
 
-      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[i]))
+      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[i - 1]))
       if ($th.length > 1) {
         $th = $($ths[$this[0].cellIndex])
       }
