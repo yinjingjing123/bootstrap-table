@@ -367,6 +367,20 @@ The table options are defined in `jQuery.fn.bootstrapTable.defaults`.
 
 - **Example:** [Detail View Icon](https://examples.bootstrap-table.com/#options/detail-view-icon.html)
 
+## detailViewHAlign
+
+- **Attribute:** `data-detail-view-h-align`
+
+- **Type:** `String`
+
+- **Detail:**
+
+  Indicate how to align the detail view icon input. `'left'`, `'right'` can be used.
+
+- **Default:** `'left'`
+
+- **Example:** [Detail view Align](https://examples.bootstrap-table.com/#options/detail-view-align.html)
+
 ## detailViewIcon
 
 - **Attribute:** `data-detail-view-icon`

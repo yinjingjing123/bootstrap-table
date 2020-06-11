@@ -219,6 +219,7 @@ const DEFAULTS = {
   detailView: false,
   detailViewIcon: true,
   detailViewByClick: false,
+  detailViewHAlign: 'left',
   detailFormatter (index, row) {
     return ''
   },

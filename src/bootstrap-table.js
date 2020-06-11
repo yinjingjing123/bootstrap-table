@@ -223,14 +223,6 @@ class BootstrapTable {
 
     this.options.columns.forEach((columns, i) => {
       html.push('<tr>')
-
-      if (i === 0 && Utils.hasDetailViewIcon(this.options)) {
-        html.push(`<th class="detail" rowspan="${this.options.columns.length}">
-          <div class="fht-cell"></div>
-          </th>
-        `)
-      }
-
       columns.forEach((column, j) => {
         const class_ = Utils.sprintf(' class="%s"', column['class'])
         const unitWidth = column.widthUnit
@@ -323,6 +315,13 @@ class BootstrapTable {
         html.push('</div>')
         html.push('</th>')
       })
+
+      if (i === 0 && Utils.hasDetailViewIcon(this.options)) {
+        const detailViewTemplate = `<th class="detail" rowspan="${this.options.columns.length}">
+          <div class="fht-cell"></div>
+          </th>`
+        this.options.detailViewHAlign === 'left' ? html.splice(1, 0, detailViewTemplate) : html.push(detailViewTemplate)
+      }
       html.push('</tr>')
     })
 
@@ -1284,20 +1283,6 @@ class BootstrapTable {
       html.push(`<td colspan="${this.header.fields.length}"><div class="card-views">`)
     }
 
-    if (Utils.hasDetailViewIcon(this.options)) {
-      html.push('<td>')
-
-      if (Utils.calculateObjectValue(null, this.options.detailFilter, [i, item])) {
-        html.push(`
-          <a class="detail-icon" href="#">
-          ${Utils.sprintf(this.constants.html.icon, this.options.iconsPrefix, this.options.icons.detailOpen)}
-          </a>
-        `)
-      }
-
-      html.push('</td>')
-    }
-
     this.header.fields.forEach((field, j) => {
       let text = ''
       let value_ = Utils.getItemField(item, field, this.options.escape)
@@ -1424,6 +1409,21 @@ class BootstrapTable {
       html.push(text)
     })
 
+    if (Utils.hasDetailViewIcon(this.options)) {
+      this.options.detailViewHAlign === 'left' ? html.splice(9, 0,'<td>') : html.push('<td>')
+
+      if (Utils.calculateObjectValue(null, this.options.detailFilter, [i, item])) {
+        const detailViewTemplate = `
+          <a class="detail-icon" href="#">
+          ${Utils.sprintf(this.constants.html.icon, this.options.iconsPrefix, this.options.icons.detailOpen)}
+          </a>
+        `
+        this.options.detailViewHAlign === 'left' ? html.splice(10, 0, detailViewTemplate) : html.push(detailViewTemplate)
+      }
+
+      this.options.detailViewHAlign === 'left' ? html.splice(11, 0,'</td>') : html.push('</td>')
+    }
+
     if (this.options.cardView) {
       html.push('</div></td>')
     }
@@ -1518,10 +1518,14 @@ class BootstrapTable {
       const item = this.data[rowIndex]
       const index = this.options.cardView ? $cardViewArr.index($cardViewTarget) : $td[0].cellIndex
       const fields = this.getVisibleFields()
-      const field = fields[Utils.hasDetailViewIcon(this.options) ? index - 1 : index]
+      let detailViewIndex = index
+      if (Utils.hasDetailViewIcon(this.options)) {
+        detailViewIndex = this.options.detailViewHAlign === 'left' ? index - 1 : index + 1
+      }
+
+      const field = fields[Utils.hasDetailViewIcon(this.options) ? detailViewIndex : index]
       const column = this.columns[this.fieldsColumnsIndex[field]]
       const value = Utils.getItemField(item, field, this.options.escape)
-
       if ($td.find('.detail-icon').length) {
         return
       }
@@ -1863,22 +1867,19 @@ class BootstrapTable {
 
     $tr.find('> *').each((i, el) => {
       const $this = $(el)
-      let index = i
-
       if (Utils.hasDetailViewIcon(this.options)) {
-        if (i === 0) {
+        if (
+          (this.options.detailViewHAlign !== 'left' && i === $tr.find('> *').length - 1)
+          || (this.options.detailViewHAlign === 'left' && i === 0)
+        ) {
           const $thDetail = $ths.filter('.detail')
           const zoomWidth = $thDetail.innerWidth() - $thDetail.find('.fht-cell').width()
           $thDetail.find('.fht-cell').width($this.innerWidth() - zoomWidth)
+          return
         }
-        index = i - 1
       }
 
-      if (index === -1) {
-        return
-      }
-
-      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[index]))
+      let $th = this.$header_.find(Utils.sprintf('th[data-field="%s"]', visibleFields[i]))
       if ($th.length > 1) {
         $th = $($ths[$this[0].cellIndex])
       }
@@ -1981,19 +1982,17 @@ class BootstrapTable {
 
     $tr.find('> *').each((i, el) => {
       const $this = $(el)
-      let index = i
 
       if (Utils.hasDetailViewIcon(this.options)) {
-        if (i === 0) {
+        if (
+          (this.options.detailViewHAlign !== 'left' && i === $tr.find('> *').length - 1)
+          || (this.options.detailViewHAlign === 'left' && i === 0)
+        ) {
           const $thDetail = $ths.filter('.detail')
           const zoomWidth = $thDetail.innerWidth() - $thDetail.find('.fht-cell').width()
           $thDetail.find('.fht-cell').width($this.innerWidth() - zoomWidth)
+          return
         }
-        index = i - 1
-      }
-
-      if (index === -1) {
-        return
       }
 
       const $th = $ths.eq(i)
